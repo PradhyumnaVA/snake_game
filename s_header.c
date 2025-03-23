@@ -4,7 +4,7 @@ coord *move(coord *ip_coord, char input_dir, int len_tail, int interval_cnt){
 	coord *data = ip_coord;
 	int i;
 	
-	char horizontal_bound[]="----------------------------------------------------------------------------------";
+	char horizontal_bound[]="---------------------------------------------------------------------------------";
 
 	// tail configurations
 	char t_down[] = "o\033[A\033[D";
@@ -88,6 +88,11 @@ coord *move(coord *ip_coord, char input_dir, int len_tail, int interval_cnt){
 
 	printf("\033[4;10H%s",horizontal_bound);
 	printf("\033[30;10H%s",horizontal_bound);
+
+	for(int v_cnt=5;v_cnt<30;v_cnt++){
+		printf("\033[%d;10H|",v_cnt);
+		printf("\033[%d;90H|",v_cnt);
+	}
 
 	printf("\033[2;1Hx=%d,y=%d",x,y);
 
