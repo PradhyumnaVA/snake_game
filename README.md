@@ -1,4 +1,4 @@
-# Snake game
+# Snake game(**Use version_2.0**)
 
 ## Running the game:
 ```
