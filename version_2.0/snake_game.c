@@ -36,6 +36,9 @@ int main(){
 		// closing read end of pipe
 		close(pipefd[0]); 
 
+    // creates a new screen buffer such that the present terminal isnt disturbed
+    printf("\033[?1049h");
+
 		printf("\033[2J");
 
 		// change the terminal to raw mode, input directly taken, no need to press ENTER
@@ -146,6 +149,9 @@ int main(){
         /* pos_dir_change = turn_point(present_c, input_dir, pos_dir_change); */
 
 				if(input_dir == 'q'){
+          // disables the screen buffer
+          printf("\033[?1049l");
+
 					break; // ends the infinite loop
 				}
 			}
