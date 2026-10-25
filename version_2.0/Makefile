@@ -6,10 +6,10 @@ OUTPUT := snake_game
 snake_game: ${OUTPUT}.o ${HEADER}.o
 	gcc $(INCLUDES) -o ${OUTPUT} ${OUTPUT}.o ${HEADER}.o
 
-snake_game.o: ${FILE} ${HEADER}.h
+snake_game.o: ${FILE} ${HEADER}.h ANSI-color-codes.h
 	gcc -Wall -Wextra -pedantic -c -g ${FILE}
 
-s_header.o: ${HEADER}.c ${HEADER}.h
+s_header.o: ${HEADER}.c ${HEADER}.h ANSI-color-codes.h
 	gcc -Wall -Wextra -pedantic -c -g ${HEADER}.c
 
 run: ${OUTPUT}

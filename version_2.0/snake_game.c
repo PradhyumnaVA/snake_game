@@ -7,6 +7,9 @@ int main(){
 	pid_t pid;
 	int buf_status;
 
+  // creates a new screen buffer such that the present terminal isnt disturbed
+  printf("\033[?1049h");
+
 	// creating pipe
 	if(pipe(pipefd) == -1){
 		perror("pipe not created");
@@ -35,9 +38,6 @@ int main(){
 
 		// closing read end of pipe
 		close(pipefd[0]); 
-
-    // creates a new screen buffer such that the present terminal isnt disturbed
-    printf("\033[?1049h");
 
 		printf("\033[2J");
 
@@ -74,7 +74,7 @@ int main(){
 		// allocate memory on the heap for the present coordinate struct
 		coord *present_c = (coord*)malloc(100*sizeof(coord));
 
-		char *score = (char*)malloc(20*sizeof(char)); 
+		char *score = (char*)malloc(500*sizeof(char)); 
 		int count=0;
 
 		// initial position of head 
@@ -87,9 +87,6 @@ int main(){
 
     // this is not used, ignore it - linked list for keeping track of direction change coordinates
     /* struct node *pos_dir_change = create(present_c -> x, present_c -> y, input_dir); */
-
-		// variable to count the instances between key press
-		int interval_cnt=0;
 
 		// closing write end of pipe
 		close(pipefd[1]); 
@@ -113,9 +110,7 @@ int main(){
 
 					if((present_c[0].p_x == present_c->rand_x+1) && (present_c[0].p_y == present_c->rand_y)){
 						printf("\033[2J");
-						printf("\033[1;1Hsuccess\n");
-						/* (present_c->x)++; */
-						/* (present_c->y)++; */
+
 						count++;
 						time_incr=time_incr-6000;
 						score = keep_score(score,count);			
@@ -123,13 +118,11 @@ int main(){
 						continue;
 					}		
 
-					printf("\033[1;1H");
+					printf(BWHT "\033[1;1HSCORE:" reset);
 					printf("%s%d", score, count*10);
 					fflush(stdout);
 
-					present_c = move(present_c, input_dir, count, interval_cnt);
-
-					interval_cnt++;
+					present_c = move(present_c, input_dir, count);
 
 					usleep(time_incr);
 					printf("\033[2J");
@@ -143,23 +136,21 @@ int main(){
 			// when key is pressed 
 			else {
 				input_dir = buffer[0];
-				interval_cnt = 0;
-        /* present_c = move(present_c, input_dir, count, interval_cnt); */
-        
-        /* pos_dir_change = turn_point(present_c, input_dir, pos_dir_change); */
 
 				if(input_dir == 'q'){
-          // disables the screen buffer
-          printf("\033[?1049l");
-
+					fflush(stdout);
+					printf("\033[2J");
 					break; // ends the infinite loop
 				}
 			}
 		}
+
+    // disables the screen buffer
+    printf("\033[?1049l");
+
 		system("stty cooked echo");
 		free(present_c);	
 		free(score);
-		printf("incr=%d",time_incr);
 		exit(EXIT_SUCCESS);
 	}
 	return EXIT_SUCCESS;

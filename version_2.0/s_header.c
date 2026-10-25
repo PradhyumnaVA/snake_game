@@ -1,6 +1,6 @@
 #include "s_header.h"
 
-coord *move(coord *ip_coord, char input_dir, int len_tail, int interval_cnt){
+coord *move(coord *ip_coord, char input_dir, int len_tail){
 	/* coord *data = ip_coord; */
   coord *spine = ip_coord;
 	int i;
@@ -15,6 +15,7 @@ coord *move(coord *ip_coord, char input_dir, int len_tail, int interval_cnt){
 
   switch(input_dir){
     case 'w': 
+    case 'A': 
       if(spine[0].dir != 's'){
         spine[0].dir=input_dir;
       } 
@@ -67,7 +68,11 @@ coord *move(coord *ip_coord, char input_dir, int len_tail, int interval_cnt){
       /*             break; */
       /*   default : break; */
       /* } */
-        sprintf(spine[i].bone, "\033[%d;%dHo", spine[i].p_y, spine[i].p_x);
+        if(i<7){
+          sprintf(spine[i].bone, "\033[1;%dm\033[%d;%dHo", 30+i, spine[i].p_y, spine[i].p_x);
+        } else {
+          sprintf(spine[i].bone, "\033[1;%dm\033[%d;%dHo", 34+i, spine[i].p_y, spine[i].p_x);
+        }
       } else{
       switch(spine[i].dir){
         case 'w': spine[i].p_y--;
@@ -108,7 +113,7 @@ coord *move(coord *ip_coord, char input_dir, int len_tail, int interval_cnt){
 
     // printing the whole tail
     for(int cnt=0; cnt<=num_spines; cnt++){
-      printf("%s",spine[cnt].bone);
+      printf(reset BWHT "%s" reset,spine[cnt].bone);
       fflush(stdout);
     }
 
@@ -129,8 +134,6 @@ coord *move(coord *ip_coord, char input_dir, int len_tail, int interval_cnt){
 	/* printf("\033[2;1Hx=%d,y=%d",x,y); */
 
 	/* printf("\033[3:1Hposx=%d,posy=%d", data -> rand_x, data -> rand_y); */
-
-	printf("\033[3;1Hinterval_cnt=%d",interval_cnt);
 	fflush(stdout);
 	
 	/* data -> x = x; */
@@ -178,13 +181,12 @@ coord *pos(coord *input_coord, int num_spines){
 }
 
 char* keep_score(char *input, int i){
-	char *foo = (char*)malloc(20*sizeof(char)); 
+	char *foo = (char*)malloc(500*sizeof(char)); 
 	foo = input;
+  char score_clr[20];
 
-	strcat(foo, "#");
-	printf("\033[1;1H");
-	printf("%s%d", foo, i*10);
-	fflush(stdout);
+  sprintf(score_clr, "\033[1;%dm#", 30+i);
+	strcat(foo, score_clr);
 
 	return foo;
 }
